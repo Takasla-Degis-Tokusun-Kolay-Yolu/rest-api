@@ -1,30 +1,26 @@
 import CryptoJS from 'crypto-js';
 import JWT from 'jsonwebtoken';
+import { cryptoConfig, jwtConfig } from '../../config/index.js';
 
-const passwordToHash = (password) => {
-  const salt = CryptoJS.lib.WordArray.random(16); // Salt oluşturuluyor
+function passwordToHash(password) {
+  const salt = cryptoConfig.cryptoSecret; // salt değerini burada belirtebilirsin
   const hash = CryptoJS.PBKDF2(password, salt, {
-    keySize: 64,
+    keySize: 256 / 32,
     iterations: 1000,
-    hasher: CryptoJS.algo.SHA512,
-  }); // Şifre hashleniyor
-
-  const saltString = salt.toString(CryptoJS.enc.Base64);
-  const hashString = hash.toString(CryptoJS.enc.Base64);
-
-  return `${saltString}.${hashString}`; // Salt ve hash değerleri birleştirilerek döndürülüyor
-};
+  }).toString(CryptoJS.enc.Base64);
+  return hash;
+}
 
 // Access Token Oluşturma
 const generateAccessToken = (user) => {
-  const accessToken = JWT.sign({ name: user.email, ...user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1w' });
+  const accessToken = JWT.sign({ name: user.email, ...user }, jwtConfig.jwtAccessSecret, { expiresIn: '1w' });
   console.log(accessToken);
   return accessToken;
 };
 
 // Refresh Token Oluşturma
 const generateRefreshToken = (user) => {
-  const refreshToken = JWT.sign({ name: user.email, ...user }, process.env.REFRESH_TOKEN_SECRET);
+  const refreshToken = JWT.sign({ name: user.email, ...user }, jwtConfig.jwtRefreshSecret);
   return refreshToken;
 };
 

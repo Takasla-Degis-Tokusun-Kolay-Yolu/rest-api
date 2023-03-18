@@ -1,95 +1,105 @@
 import httpStatus from 'http-status';
 import UserService from '../services/User.js';
-import JwtHelper from '../scripts/utils/helper.js';
+import Helper from '../scripts/utils/helper.js';
 
-const create = async (req, res) => {
-  req.body.password = JwtHelper.passwordToHash(req.body.password);
-  UserService.insert(req.body)
-    .then((response) => {
-      res.status(httpStatus.CREATED).json(response);
-    })
-    .catch((error) => {
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    });
-};
+class User {
+  index = (req, res) => {
+    UserService.list()
+      .then((response) => {
+        res.status(httpStatus.OK).send(response);
+      }).catch((e) => {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+      });
+  };
 
-const login = (req, res) => {
-  req.body.password = JwtHelper.passwordToHash(req.body.password);
-
-  UserService.findOne(req.body.email)
-    .then((user) => {
-      if (!user) {
-        return res.status(httpStatus.NOT_FOUND).send({
-          message: 'User not found',
-        });
-      }
-      console.log(user);
-      user = {
-        ...user._doc,
-        tokens: {
-          access_token: JwtHelper.generateAccessToken(user),
-          refresh_token: JwtHelper.generateRefreshToken(user),
-        },
-      };
-      console.log('updated user', user);
-      delete user.password;
-      res.status(httpStatus.OK).send(user);
-    })
-    .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e));
-};
-
-const index = (req, res) => {
-  UserService.list()
-    .then((response) => {
-      res.status(httpStatus.OK).send(response);
-    }).catch((e) => {
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
-    });
-};
-
-// TODO: RESET PASSWORD
-
-const update = (req, res) => {
-  // eslint-disable-next-line no-underscore-dangle
-  UserService.update({ _id: req.user?._id }, req.body)
-    .then((updatedUser) => {
-      res.status(httpStatus.OK).send(updatedUser);
-    })
-    .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
-};
-
-const deleteUser = (req, res) => {
-  if (!req.params?.id) {
-    return res.status(httpStatus.BAD_REQUEST).send({
-      message: 'ID bilgisi eksik !',
-    });
+  create(req, res) {
+    req.body.password = Helper.passwordToHash(req.body.password);
+    UserService.create(req.body)
+      .then((response) => {
+        res.status(httpStatus.CREATED).send(response);
+      })
+      .catch((e) => {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+      });
   }
-  UserService.delete(req.params?.id).then((deletedUser) => {
-    if (!deletedUser) {
-      return res.status(httpStatus.NOT_FOUND).send({
-        message: 'Bu ID değerine sahip kullanıcı bulunmamaktadır. !',
+
+  login(req, res) {
+    req.body.password = Helper.passwordToHash(req.body.password);
+    console.log(req.body);
+    UserService.findOne(req.body)
+      .then((user) => {
+        if (!user) {
+          return res.status(httpStatus.NOT_FOUND).send({
+            message: 'Böyle bir kullanıcı bulunamadı.',
+          });
+        }
+        user = {
+          ...user.toObject(),
+          tokens: {
+            access_token: Helper.generateAccessToken(user),
+            refresh_token: Helper.generateRefreshToken(user),
+          },
+        };
+        delete user.password;
+        res.status(httpStatus.OK).send(user);
+      })
+      .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e));
+  }
+
+  update(req, res) {
+    UserService.update({ _id: req.user?._id }, req.body)
+      .then((updatedUser) => {
+        res.status(httpStatus.OK).send(updatedUser);
+      })
+      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
+  }
+
+  deleteUser(req, res) {
+    if (!req.params?.id) {
+      return res.status(httpStatus.BAD_REQUEST).send({
+        message: 'ID bilgisi eksik !',
       });
     }
-    res.status(httpStatus.OK).send({ message: 'Belirtilen kullanıcı silinmiştir' });
-  }).catch((error) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Kullanıcı silinirken bir sorunla karşılaşıldı.', message: error }));
-};
+    UserService.delete(req.params?.id).then((deletedUser) => {
+      if (!deletedUser) {
+        return res.status(httpStatus.NOT_FOUND).send({
+          message: 'Bu ID değerine sahip kullanıcı bulunmamaktadır. !',
+        });
+      }
+      res.status(httpStatus.OK).send({ message: 'Belirtilen kullanıcı silinmiştir' });
+    }).catch((error) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Kullanıcı silinirken bir sorunla karşılaşıldı.', message: error.message }));
+  }
 
-const changePassword = (req, res) => {
-  req.body.password = JwtHelper.passwordToHash(req.body.password);
-  //! UI geldikten sonra şifre karşılaştırmalarına ilişkin kurallar eklenebilir.
-  // eslint-disable-next-line no-underscore-dangle
-  UserService.update({ _id: req.user?._id }, req.body)
-    .then((updatedUser) => {
-      res.status(httpStatus.OK).send(updatedUser);
-    })
-    .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
-};
+  changePassword(req, res) {
+    req.body.password = Helper.passwordToHash(req.body.password);
+    //! UI geldikten sonra şifre karşılaştırmalarına ilişkin kurallar eklenebilir.
+    UserService.update({ _id: req.user?._id }, req.body)
+      .then((updatedUser) => {
+        res.status(httpStatus.OK).send(updatedUser);
+      })
+      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
+  }
 
-export default {
-  create,
-  index,
-  login,
-  update,
-  deleteUser,
-  changePassword,
-};
+  updateProfileImage(req, res) {
+    //! 1 - Resim kontrolü
+    if (!req?.files?.profile_image) {
+      return res.status(httpStatus.BAD_REQUEST).send({ error: 'Bu işlemi yapabilmek için yeterli veriye sahip değilsiniz!' });
+    }
+    //! 2 - Upload işlemi
+    const extension = path.extname(req.files.profile_image.name);
+    const fileName = `${req?.user._id}${extension}`;
+    const folderPath = path.join(__dirname, '../', 'uploads/users', fileName);
+    req.files.profile_image.mv(folderPath, (err) => {
+      if (err) return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: err });
+      UserService.update(req.user._id, { profile_image: fileName })
+        .then((updatedUser) => {
+          res.status(httpStatus.OK).send(updatedUser);
+        })
+        .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Upload Başarılı, ancak kayıt sırasında sorun oluştu.' }));
+    });
+    //! 3 - DB save
+    //! 4 - Response
+  }
+}
+
+export default new User();

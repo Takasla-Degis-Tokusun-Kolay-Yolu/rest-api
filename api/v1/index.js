@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
 
 mongoose
-  .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(CONNECTION_URL.toString(), { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('MongoDB Connected');
     app.listen(PORT, () => {

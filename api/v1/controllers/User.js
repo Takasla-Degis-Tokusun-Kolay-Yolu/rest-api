@@ -6,31 +6,79 @@ class User {
   index = (req, res) => {
     UserService.list()
       .then((response) => {
-        res.status(httpStatus.OK).send(response);
+        res.status(httpStatus.OK).send({
+          success: true,
+          data: response,
+        });
       }).catch((e) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
       });
+  };
+
+  getOneById = (req, res) => {
+    if (!req.params?.id) {
+      return res.status(httpStatus.BAD_REQUEST).send({
+        success: false,
+        message: 'There is no ID value in the request!',
+      });
+    }
+    UserService.findOneById(req.params?.id)
+      .then((user) => {
+        if (!user) {
+          return res.status(httpStatus.NOT_FOUND).send({
+            success: false,
+            message: 'There is no user with the given ID!',
+          });
+        }
+
+        res.status(httpStatus.OK).send({
+          success: true,
+          data: user,
+        });
+      })
+      .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        success: false,
+        message: 'An error occurred while retrieving the user.',
+        error: e,
+      }));
   };
 
   create(req, res) {
     req.body.password = Helper.passwordToHash(req.body.password);
     UserService.create(req.body)
       .then((response) => {
-        res.status(httpStatus.CREATED).send(response);
+        response = {
+          ...response.toObject(),
+        };
+        delete response.password;
+        res.status(httpStatus.CREATED).send({
+          success: true,
+          data: response,
+        });
       })
       .catch((e) => {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
+        if (e.code === 11000) {
+          return res.status(httpStatus.BAD_REQUEST).send({
+            success: false,
+            message: 'This email address has already been registered.',
+          });
+        }
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+          success: false,
+          message: 'An error occurred while creating the user.',
+          error: e,
+        });
       });
   }
 
   login(req, res) {
     req.body.password = Helper.passwordToHash(req.body.password);
-    console.log(req.body);
     UserService.findOne(req.body)
       .then((user) => {
         if (!user) {
           return res.status(httpStatus.NOT_FOUND).send({
-            message: 'Böyle bir kullanıcı bulunamadı.',
+            success: false,
+            message: 'No such user was found.',
           });
         }
         user = {
@@ -41,7 +89,10 @@ class User {
           },
         };
         delete user.password;
-        res.status(httpStatus.OK).send(user);
+        res.status(httpStatus.OK).send({
+          success: true,
+          data: user,
+        });
       })
       .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e));
   }
@@ -49,7 +100,10 @@ class User {
   update(req, res) {
     UserService.update({ _id: req.user?._id }, req.body)
       .then((updatedUser) => {
-        res.status(httpStatus.OK).send(updatedUser);
+        res.status(httpStatus.OK).send({
+          success: true,
+          data: updatedUser,
+        });
       })
       .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
   }
@@ -57,21 +111,25 @@ class User {
   deleteUser(req, res) {
     if (!req.params?.id) {
       return res.status(httpStatus.BAD_REQUEST).send({
-        message: 'ID bilgisi eksik !',
+        success: false,
+        message: 'There is no ID value in the request!',
       });
     }
     UserService.delete(req.params?.id).then((deletedUser) => {
       if (!deletedUser) {
         return res.status(httpStatus.NOT_FOUND).send({
-          message: 'Bu ID değerine sahip kullanıcı bulunmamaktadır. !',
+          success: false,
+          message: 'There is no user with the given ID!',
         });
       }
-      res.status(httpStatus.OK).send({ message: 'Belirtilen kullanıcı silinmiştir' });
-    }).catch((error) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Kullanıcı silinirken bir sorunla karşılaşıldı.', message: error.message }));
+      res.status(httpStatus.OK).send({ success: true, message: 'The specified user has been deleted.' });
+    }).catch((error) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ success: false, error: 'Something went wrong when deleting user.', message: error.message }));
   }
 
   changePassword(req, res) {
-    req.body.password = Helper.passwordToHash(req.body.password);
+    req.body.password = Helper.passwordToHash(req.body.newPassword);
+    req.body.oldPassword = Helper.passwordToHash(req.body.oldPassword);
+    UserService.findOne({ _id: req.user?._id, password: req.body.oldPassword });
     //! UI geldikten sonra şifre karşılaştırmalarına ilişkin kurallar eklenebilir.
     UserService.update({ _id: req.user?._id }, req.body)
       .then((updatedUser) => {

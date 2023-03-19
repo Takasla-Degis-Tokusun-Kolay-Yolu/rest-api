@@ -20,10 +20,14 @@ export const resetPasswordValidation = Joi.object({
 });
 
 export const updateUserValidation = Joi.object({
-  full_name: Joi.string().min(3),
-  email: Joi.string().email().min(8),
+  firstName: Joi.string(),
+  lastName: Joi.string(),
+  profileImage: Joi.string(),
+  location: Joi.string(),
 });
 
 export const changePasswordValidation = Joi.object({
-  password: Joi.string().required().min(8),
+  oldPassword: Joi.string().required().min(8),
+  newPassword: Joi.string().required().min(8),
+  rePassword: Joi.string().required().valid(Joi.ref('newPassword')),
 });

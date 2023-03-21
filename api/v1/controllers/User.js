@@ -10,7 +10,8 @@ class User {
           success: true,
           data: response,
         });
-      }).catch((e) => {
+      })
+      .catch((e) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
       });
   };
@@ -105,7 +106,9 @@ class User {
           data: updatedUser,
         });
       })
-      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
+      .catch(() => res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
   }
 
   deleteUser(req, res) {
@@ -115,15 +118,28 @@ class User {
         message: 'There is no ID value in the request!',
       });
     }
-    UserService.delete(req.params?.id).then((deletedUser) => {
-      if (!deletedUser) {
-        return res.status(httpStatus.NOT_FOUND).send({
+    UserService.delete(req.params?.id)
+      .then((deletedUser) => {
+        if (!deletedUser) {
+          return res.status(httpStatus.NOT_FOUND).send({
+            success: false,
+            message: 'There is no user with the given ID!',
+          });
+        }
+        res
+          .status(httpStatus.OK)
+          .send({
+            success: true,
+            message: 'The specified user has been deleted.',
+          });
+      })
+      .catch((error) => res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({
           success: false,
-          message: 'There is no user with the given ID!',
-        });
-      }
-      res.status(httpStatus.OK).send({ success: true, message: 'The specified user has been deleted.' });
-    }).catch((error) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ success: false, error: 'Something went wrong when deleting user.', message: error.message }));
+          error: 'Something went wrong when deleting user.',
+          message: error.message,
+        }));
   }
 
   changePassword(req, res) {
@@ -135,25 +151,39 @@ class User {
       .then((updatedUser) => {
         res.status(httpStatus.OK).send(updatedUser);
       })
-      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
+      .catch(() => res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
   }
 
   updateProfileImage(req, res) {
     //! 1 - Resim kontrolü
     if (!req?.files?.profile_image) {
-      return res.status(httpStatus.BAD_REQUEST).send({ error: 'Bu işlemi yapabilmek için yeterli veriye sahip değilsiniz!' });
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send({
+          error: 'Bu işlemi yapabilmek için yeterli veriye sahip değilsiniz!',
+        });
     }
     //! 2 - Upload işlemi
     const extension = path.extname(req.files.profile_image.name);
     const fileName = `${req?.user._id}${extension}`;
     const folderPath = path.join(__dirname, '../', 'uploads/users', fileName);
     req.files.profile_image.mv(folderPath, (err) => {
-      if (err) return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: err });
+      if (err) {
+        return res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ error: err });
+      }
       UserService.update(req.user._id, { profile_image: fileName })
         .then((updatedUser) => {
           res.status(httpStatus.OK).send(updatedUser);
         })
-        .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Upload Başarılı, ancak kayıt sırasında sorun oluştu.' }));
+        .catch((e) => res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({
+            error: 'Upload Başarılı, ancak kayıt sırasında sorun oluştu.',
+          }));
     });
     //! 3 - DB save
     //! 4 - Response

@@ -8,11 +8,12 @@ export const createValidation = Joi.object({
   rePassword: Joi.string().required().valid(Joi.ref('password')),
   profileImage: Joi.string(),
   location: Joi.string().required(),
+  isAdmin: Joi.boolean(),
 });
 
 export const loginValidation = Joi.object({
-  password: Joi.string().required().min(8),
   email: Joi.string().email().required().min(8),
+  password: Joi.string().required().min(8),
 });
 
 export const resetPasswordValidation = Joi.object({

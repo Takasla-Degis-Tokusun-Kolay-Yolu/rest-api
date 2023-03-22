@@ -23,8 +23,13 @@ export const resetPasswordValidation = Joi.object({
 export const updateUserValidation = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
+  phone: Joi.string(),
   profileImage: Joi.string(),
   location: Joi.string(),
+  address: Joi.string(),
+  rate: Joi.number(),
+  longitude: Joi.string(),
+  latitude: Joi.string(),
 });
 
 export const changePasswordValidation = Joi.object({

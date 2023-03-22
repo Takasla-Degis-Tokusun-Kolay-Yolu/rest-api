@@ -1,4 +1,4 @@
-import Mongoose from "mongoose";
+import Mongoose from 'mongoose';
 
 const UserSchema = new Mongoose.Schema(
   {
@@ -13,6 +13,10 @@ const UserSchema = new Mongoose.Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
       unique: true,
     },
     password: {
@@ -31,8 +35,21 @@ const UserSchema = new Mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    address: {
+      type: String,
+    },
+    rate: {
+      type: Number,
+      default: 0,
+    },
+    longitude: {
+      type: String,
+    },
+    latitude: {
+      type: String,
+    },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false },
 );
 
-export default Mongoose.model("User", UserSchema);
+export default Mongoose.model('User', UserSchema);

@@ -27,7 +27,8 @@ mongoose
     app.listen(PORT, () => {
       console.log(`Server running on port: ${PORT}`);
       app.use('/users', Routes.UserRouter);
-      app.use('/category', Routes.CategoryRouter);
+      app.use('/categories', Routes.CategoryRouter);
+      app.use('/products', Routes.ProductRouter);
 
       // Page Not Found
       app.use((req, res, next) => {

@@ -13,7 +13,6 @@ const ProductSchema = new Mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     image: {
       type: String,
@@ -47,7 +46,6 @@ const ProductSchema = new Mongoose.Schema(
     acceptedCategories: {
       type: [Mongoose.Schema.Types.ObjectId],
       ref: 'Category',
-
     },
   },
   { timestamps: true, versionKey: false },

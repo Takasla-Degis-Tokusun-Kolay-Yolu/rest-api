@@ -6,7 +6,7 @@ const validate = (schema) => (req, res, next) => {
     // error.details = [{message: ""}, {}, {}]
     const errorMessage = error.details?.map((detail) => detail.message).join(', ');
     // ["", "", ""] --> "aaa, bbb, ccc, ddd"
-    res.status(httpStatus.BAD_REQUEST).json({ error: errorMessage });
+    res.status(httpStatus.BAD_REQUEST).json({ success: false, error: errorMessage });
     return;
   }
   Object.assign(req, value);

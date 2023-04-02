@@ -1,9 +1,9 @@
 import httpStatus from 'http-status';
-import ProductService from '../services/Product.js';
+import OfferService from '../services/Offer.js';
 
-class Product {
+class Offer {
   index = (req, res) => {
-    ProductService.list()
+    OfferService.list()
       .then((response) => {
         res.status(httpStatus.OK).send({
           success: true,
@@ -22,33 +22,28 @@ class Product {
         message: 'There is no ID value in the request!',
       });
     }
-    ProductService.findOneById(req.params?.id)
-      .then(((product) => {
-        if (!product) {
+    OfferService.findOneById(req.params?.id)
+      .then(((offer) => {
+        if (!offer) {
           return res.status(httpStatus.NOT_FOUND).send({
             success: false,
-            message: 'There is no product with the given ID!',
+            message: 'There is no offer with the given ID!',
           });
         }
         res.status(httpStatus.OK).send({
           success: true,
-          data: product,
+          data: offer,
         });
       }))
       .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         success: false,
-        message: 'An error occurred while retrieving the product.',
+        message: 'An error occurred while retrieving the offer.',
         error: e,
       }));
   };
 
   create(req, res) {
-    const { user } = req;
-    req.body = {
-      ...req.body,
-      userId: user._id,
-    };
-    ProductService.create(req.body)
+    OfferService.create(req.body)
       .then((response) => {
         response = {
           ...response.toObject(),
@@ -62,60 +57,60 @@ class Product {
         if (e.code === 11000) {
           return res.status(httpStatus.BAD_REQUEST).send({
             success: false,
-            message: 'This product name has already been taken.',
+            message: 'This offer name has already been taken.',
           });
         }
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
           success: false,
-          message: 'An error occurred while creating the product.',
+          message: 'An error occurred while creating the offer.',
           error: e,
         });
       });
   }
 
   update(req, res) {
-    ProductService.update({ _id: req.params?.id }, req.body)
-      .then((updatedProduct) => {
+    OfferService.update({ _id: req.params?.id }, req.body)
+      .then((updatedOffer) => {
         res.status(httpStatus.OK).send({
           success: true,
-          data: updatedProduct,
+          data: updatedOffer,
         });
       })
       .catch(() => res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: 'An error occurred while updating product.' }));
+        .send({ error: 'An error occurred while updating offer.' }));
   }
 
-  deleteProduct(req, res) {
+  deleteOffer(req, res) {
     if (!req.params?.id) {
       return res.status(httpStatus.BAD_REQUEST).send({
         success: false,
         message: 'There is no ID value in the request!',
       });
     }
-    ProductService.delete(req.params?.id)
-      .then((deletedProduct) => {
-        if (!deletedProduct) {
+    OfferService.delete(req.params?.id)
+      .then((deletedOffer) => {
+        if (!deletedOffer) {
           return res.status(httpStatus.NOT_FOUND).send({
             success: false,
-            message: 'There is no product with the given ID!',
+            message: 'There is no offer with the given ID!',
           });
         }
         res
           .status(httpStatus.OK)
           .send({
             success: true,
-            message: 'The specified product has been deleted.',
+            message: 'The specified offer has been deleted.',
           });
       })
       .catch((error) => res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .send({
           success: false,
-          error: 'Something went wrong when deleting product.',
+          error: 'Something went wrong when deleting offer.',
           message: error.message,
         }));
   }
 }
 
-export default new Product();
+export default new Offer();

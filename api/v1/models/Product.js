@@ -5,7 +5,6 @@ const ProductSchema = new Mongoose.Schema(
     userId: {
       type: Mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     name: {
       type: String,

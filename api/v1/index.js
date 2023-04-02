@@ -29,6 +29,7 @@ mongoose
       app.use('/users', Routes.UserRouter);
       app.use('/categories', Routes.CategoryRouter);
       app.use('/products', Routes.ProductRouter);
+      app.use('/offers', Routes.OfferRouter);
 
       // Page Not Found
       app.use((req, res, next) => {

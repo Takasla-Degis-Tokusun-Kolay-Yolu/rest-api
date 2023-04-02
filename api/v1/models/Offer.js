@@ -1,4 +1,4 @@
-const Mongoose = require('mongoose');
+import Mongoose from 'mongoose';
 
 const OfferSchema = new Mongoose.Schema({
   addsProduct: {
@@ -27,4 +27,4 @@ const OfferSchema = new Mongoose.Schema({
   },
 }, { timestamps: true, versionKey: false });
 
-module.exports = Mongoose.model('Offer', OfferSchema);
+export default Mongoose.model('Offer', OfferSchema);

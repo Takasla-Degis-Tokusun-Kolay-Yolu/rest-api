@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export const createValidation = Joi.object({
-  userId: Joi.string().required(),
+  userId: Joi.string(),
   name: Joi.string().required(),
   description: Joi.string(),
   image: Joi.string().required(),

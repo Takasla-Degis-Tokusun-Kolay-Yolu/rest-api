@@ -6,8 +6,17 @@ class ProductService extends BaseService {
     super(BaseModel);
   }
 
+  list() {
+    return BaseModel.find().populate('userId').populate('categoryId').populate('acceptedCategories')
+      .populate('incomingOffers.userId');
+  }
+
   findOneById(id) {
     return BaseModel.findOne({ _id: id });
+  }
+
+  create(data) {
+    return BaseModel.create(data);
   }
 }
 

@@ -61,7 +61,7 @@ class User {
         if (e.code === 11000) {
           return res.status(httpStatus.BAD_REQUEST).send({
             success: false,
-            message: 'This email address has already been registered.',
+            message: e.message,
           });
         }
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({

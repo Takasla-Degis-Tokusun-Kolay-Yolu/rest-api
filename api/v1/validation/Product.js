@@ -17,7 +17,7 @@ export const updateValidation = Joi.object({
   name: Joi.string(),
   description: Joi.string(),
   image: Joi.string(),
-  categoryId: Joi.array().items(Joi.string()).required(),
+  categoryId: Joi.array().items(Joi.string()),
   usageLevel: Joi.number(),
   tags: Joi.array().items(Joi.string()),
   incomingOffers: Joi.array().items(Joi.string()),

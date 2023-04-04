@@ -7,16 +7,45 @@ class ProductService extends BaseService {
   }
 
   list() {
-    return BaseModel.find().populate('userId').populate('categoryId').populate('acceptedCategories')
+    return BaseModel.find().populate({
+      path: 'userId',
+      select: 'firstName lastName email location rate profileImage',
+    }).populate({
+      path: 'categoryId',
+      select: 'name',
+    }).populate({
+      path: 'acceptedCategories',
+      select: 'name',
+    })
       .populate('incomingOffers.userId');
   }
 
   findOneById(id) {
-    return BaseModel.findOne({ _id: id });
+    return BaseModel.findOne({ _id: id }).populate({
+      path: 'userId',
+      select: 'firstName lastName email location rate profileImage',
+    }).populate({
+      path: 'categoryId',
+      select: 'name',
+    }).populate({
+      path: 'acceptedCategories',
+      select: 'name',
+    })
+      .populate('incomingOffers.userId');
   }
 
-  create(data) {
-    return BaseModel.create(data);
+  getMine(userId) {
+    return BaseModel.find({ userId }).populate({
+      path: 'userId',
+      select: 'firstName lastName email location rate profileImage',
+    }).populate({
+      path: 'categoryId',
+      select: 'name',
+    }).populate({
+      path: 'acceptedCategories',
+      select: 'name',
+    })
+      .populate('incomingOffers.userId');
   }
 }
 

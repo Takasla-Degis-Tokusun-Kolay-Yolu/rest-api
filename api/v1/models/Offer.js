@@ -1,24 +1,24 @@
 import Mongoose from 'mongoose';
 
 const OfferSchema = new Mongoose.Schema({
-  addsProduct: {
-    type: Mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true,
-  },
-  addsUser: {
+  advertiserUser: {
     type: Mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
-  offerProduct: {
+  advertiserProducts: {
     type: Mongoose.Schema.Types.ObjectId,
     ref: 'Product',
     required: true,
   },
-  offerUser: {
+  applicantUser: {
     type: Mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
+  },
+  applicantProducts: {
+    type: Mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
     required: true,
   },
   isAccepted: {

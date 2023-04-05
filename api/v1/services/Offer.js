@@ -6,6 +6,14 @@ class OfferService extends BaseService {
     super(BaseModel);
   }
 
+  index() {
+    return BaseModel.find()
+      .populate('advertiserUser')
+      .populate('advertiserProducts')
+      .populate('applicantUser')
+      .populate('applicantProducts');
+  }
+
   findOneById(id) {
     return BaseModel.findOne({ _id: id });
   }

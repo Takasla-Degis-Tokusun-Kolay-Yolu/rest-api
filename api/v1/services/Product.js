@@ -47,6 +47,20 @@ class ProductService extends BaseService {
     })
       .populate('incomingOffers.userId');
   }
+
+  getOthers(userId) {
+    return BaseModel.find({ userId: { $ne: userId } }).populate({
+      path: 'userId',
+      select: 'firstName lastName email location rate profileImage',
+    }).populate({
+      path: 'categoryId',
+      select: 'name',
+    }).populate({
+      path: 'acceptedCategories',
+      select: 'name',
+    })
+      .populate('incomingOffers.userId');
+  }
 }
 
 export default new ProductService();

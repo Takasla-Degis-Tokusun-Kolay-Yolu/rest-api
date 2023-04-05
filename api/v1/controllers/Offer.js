@@ -43,6 +43,8 @@ class Offer {
   };
 
   create(req, res) {
+    const { user } = req;
+    req.body.applicantUser = user._id;
     OfferService.create(req.body)
       .then((response) => {
         response = {
@@ -69,6 +71,8 @@ class Offer {
   }
 
   update(req, res) {
+    const { user } = req;
+    req.body.applicantUser = user._id;
     OfferService.update({ _id: req.params?.id }, req.body)
       .then((updatedOffer) => {
         res.status(httpStatus.OK).send({

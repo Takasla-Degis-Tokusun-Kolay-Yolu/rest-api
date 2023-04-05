@@ -1,7 +1,7 @@
 import express from 'express';
 import OfferController from '../controllers/Offer.js';
 import validate from '../middleware/validate.js';
-import { createValidation, updateValidation } from '../validation/Product.js';
+import { createValidation, updateValidation } from '../validation/Offer.js';
 import idChecker from '../middleware/idChecker.js';
 import authenticateToken from '../middleware/authenticate.js';
 

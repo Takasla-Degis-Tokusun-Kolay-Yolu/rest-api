@@ -17,7 +17,7 @@ class ProductService extends BaseService {
       path: 'acceptedCategories',
       select: 'name',
     })
-      .populate('incomingOffers.userId');
+      .populate('incomingOffers');
   }
 
   findOneById(id) {
@@ -31,7 +31,13 @@ class ProductService extends BaseService {
       path: 'acceptedCategories',
       select: 'name',
     })
-      .populate('incomingOffers.userId');
+      .populate({
+        path: 'incomingOffers',
+        populate: [
+          { path: 'applicantUser', select: 'firstName lastName email location rate profileImage' },
+          { path: 'applicantProducts' },
+        ],
+      });
   }
 
   getMine(userId) {
@@ -45,7 +51,7 @@ class ProductService extends BaseService {
       path: 'acceptedCategories',
       select: 'name',
     })
-      .populate('incomingOffers.userId');
+      .populate('incomingOffers');
   }
 
   getOthers(userId) {
@@ -59,7 +65,15 @@ class ProductService extends BaseService {
       path: 'acceptedCategories',
       select: 'name',
     })
-      .populate('incomingOffers.userId');
+      .populate({
+        path: 'incomingOffers',
+        populate: [
+          { path: 'advertiserUser', select: 'firstName lastName email location rate profileImage' },
+          { path: 'applicantUser', select: 'firstName lastName email location rate profileImage' },
+          { path: 'advertiserProducts' },
+          { path: 'applicantProducts' },
+        ],
+      });
   }
 }
 

@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import OfferService from '../services/Offer.js';
+import ProductService from '../services/Product.js';
 
 class Offer {
   index = (req, res) => {
@@ -44,28 +45,56 @@ class Offer {
 
   create(req, res) {
     const { user } = req;
-    req.body.applicantUser = user._id;
+    req.body = {
+      ...req.body,
+      applicantUser: user._id,
+    };
     OfferService.create(req.body)
       .then((response) => {
         response = {
           ...response.toObject(),
         };
+        try {
+          ProductService.findOneById(response.advertiserProducts).then((adProduct) => {
+            adProduct.incomingOffers.push(response._id);
+            adProduct.save();
+          });
+
+          res.status(httpStatus.CREATED).send({
+            success: true,
+            data: response,
+          });
+        } catch (e) {
+          res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+            success: false,
+            message: 'An error occurred while creating the offer.',
+            error: e,
+          });
+        }
+      })
+      .catch((e) => {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+          success: false,
+          message: 'An error occurred while creating the offer.',
+          error: e,
+        });
+      });
+  }
+
+  getMyOffers(req, res) {
+    const { user } = req;
+    OfferService.getMine(user._id)
+      .then((response) => {
         res.status(httpStatus.CREATED).send({
           success: true,
           data: response,
         });
       })
       .catch((e) => {
-        if (e.code === 11000) {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            success: false,
-            message: 'This offer name has already been taken.',
-          });
-        }
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
           success: false,
-          message: 'An error occurred while creating the offer.',
-          error: e,
+          message: 'An error occurred while getting the your product.',
+          error: e.message,
         });
       });
   }

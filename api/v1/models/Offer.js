@@ -25,6 +25,11 @@ const OfferSchema = new Mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  status: {
+    // 0->pending, 1->accepted, 2->rejected
+    type: Number,
+    default: 0,
+  },
 }, { timestamps: true, versionKey: false });
 
 export default Mongoose.model('Offer', OfferSchema);

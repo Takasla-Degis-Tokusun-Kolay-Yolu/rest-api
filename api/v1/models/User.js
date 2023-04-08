@@ -47,6 +47,7 @@ const UserSchema = new Mongoose.Schema(
     latitude: {
       type: String,
     },
+
   },
   { timestamps: true, versionKey: false },
 );

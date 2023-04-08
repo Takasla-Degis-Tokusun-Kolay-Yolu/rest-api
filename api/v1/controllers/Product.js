@@ -127,12 +127,6 @@ class Product {
         });
       })
       .catch((e) => {
-        if (e.code === 11000) {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            success: false,
-            message: 'This product name has already been taken.',
-          });
-        }
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
           success: false,
           message: 'An error occurred while getting the your product.',

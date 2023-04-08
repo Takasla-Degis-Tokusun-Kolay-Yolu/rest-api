@@ -33,13 +33,8 @@ const ProductSchema = new Mongoose.Schema(
     incomingOffers: [
       {
         type: Mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: 'Offer',
         required: true,
-        userId: {
-          type: Mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-          required: true,
-        },
       },
     ],
     acceptedCategories: {

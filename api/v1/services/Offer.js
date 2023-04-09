@@ -45,6 +45,46 @@ class OfferService extends BaseService {
       })
       .populate('applicantProducts');
   }
+
+  acceptOffer(id) {
+    return BaseModel.findOneAndUpdate({ _id: id }, { status: 1 }, { new: true })
+      .populate({
+        path: 'advertiserUser',
+        select: 'firstName lastName email location rate profileImage',
+      })
+      .populate({
+        path: 'advertiserProducts',
+        populate: { path: 'categoryId acceptedCategories' },
+      })
+      .populate({
+        path: 'applicantUser',
+        select: 'firstName lastName email location rate profileImage',
+      })
+      .populate({
+        path: 'applicantProducts',
+        populate: { path: 'categoryId acceptedCategories' },
+      });
+  }
+
+  rejectOffer(id) {
+    return BaseModel.findOneAndUpdate({ _id: id }, { status: 2 }, { new: true })
+      .populate({
+        path: 'advertiserUser',
+        select: 'firstName lastName email location rate profileImage',
+      })
+      .populate({
+        path: 'advertiserProducts',
+        populate: { path: 'categoryId acceptedCategories' },
+      })
+      .populate({
+        path: 'applicantUser',
+        select: 'firstName lastName email location rate profileImage',
+      })
+      .populate({
+        path: 'applicantProducts',
+        populate: { path: 'categoryId acceptedCategories' },
+      });
+  }
 }
 
 export default new OfferService();

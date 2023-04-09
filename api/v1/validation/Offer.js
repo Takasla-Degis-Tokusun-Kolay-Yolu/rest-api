@@ -9,9 +9,5 @@ export const createValidation = Joi.object({
 });
 
 export const updateValidation = Joi.object({
-  advertiserProducts: Joi.string(),
-  advertiserUser: Joi.string(),
   applicantProducts: Joi.string(),
-  applicantUser: Joi.string(),
-  isAccepted: Joi.boolean(),
 });

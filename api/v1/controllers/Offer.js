@@ -144,6 +144,50 @@ class Offer {
           message: error.message,
         }));
   }
+
+  acceptOffer(req, res) {
+    OfferService.acceptOffer(req.params?.id)
+      .then((updatedOffer) => {
+        if (!updatedOffer) {
+          return res.status(httpStatus.NOT_FOUND).send({
+            success: false,
+            message: 'There is no offer with the given ID!',
+          });
+        }
+        return res.status(httpStatus.OK).send({
+          success: true,
+          data: updatedOffer,
+        });
+      }).catch((error) => res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({
+          success: false,
+          error: 'Something went wrong when deleting offer.',
+          message: error.message,
+        }));
+  }
+
+  rejectOffer(req, res) {
+    OfferService.rejectOffer(req.params?.id)
+      .then((updatedOffer) => {
+        if (!updatedOffer) {
+          return res.status(httpStatus.NOT_FOUND).send({
+            success: false,
+            message: 'There is no offer with the given ID!',
+          });
+        }
+        return res.status(httpStatus.OK).send({
+          success: true,
+          data: updatedOffer,
+        });
+      }).catch((error) => res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({
+          success: false,
+          error: 'Something went wrong when deleting offer.',
+          message: error.message,
+        }));
+  }
 }
 
 export default new Offer();

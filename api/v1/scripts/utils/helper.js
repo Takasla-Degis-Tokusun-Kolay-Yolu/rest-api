@@ -14,7 +14,6 @@ function passwordToHash(password) {
 // Access Token Oluşturma
 const generateAccessToken = (user) => {
   const accessToken = JWT.sign({ name: user.email, ...user }, jwtConfig.jwtAccessSecret, { expiresIn: '1w' });
-  console.log(accessToken);
   return accessToken;
 };
 

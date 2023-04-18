@@ -47,21 +47,25 @@ class User {
   create(req, res) {
     req.body.password = Helper.passwordToHash(req.body.password);
     UserService.create(req.body)
-      .then((response) => {
-        response = {
-          ...response.toObject(),
+      .then((user) => {
+        user = {
+          ...user.toObject(),
+          tokens: {
+            access_token: Helper.generateAccessToken(user),
+            refresh_token: Helper.generateRefreshToken(user),
+          },
         };
-        delete response.password;
+        delete user.password;
         res.status(httpStatus.CREATED).send({
           success: true,
-          data: response,
+          data: user,
         });
       })
       .catch((e) => {
         if (e.code === 11000) {
           return res.status(httpStatus.BAD_REQUEST).send({
             success: false,
-            message: e.message,
+            message: 'Bu e-posta adresi ile daha önce kayıt olunmuş.',
           });
         }
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({

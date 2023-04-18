@@ -12,12 +12,12 @@ const DeleteOfferAuthorization = (req, res, next) => {
           offerData = {
             ...offerData.toObject(),
           };
-          if (offerData.applicantUser._id.toString() !== requestUserId._id.toString()) {
+          if (offerData.applicantUser._id.toString() === requestUserId._id.toString()) {
+            next();
+          } else {
             res.status(httpStatus.UNAUTHORIZED).send({
               success: false, message: 'You are not authorized to perform this action.',
             });
-          } else {
-            next();
           }
         });
     });

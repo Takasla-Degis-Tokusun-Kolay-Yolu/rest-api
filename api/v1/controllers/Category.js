@@ -30,10 +30,25 @@ class Category {
             message: 'There is no category with the given ID!',
           });
         }
-        res.status(httpStatus.OK).send({
-          success: true,
-          data: category,
-        });
+        try {
+          CategoryService.getProductsByCategoryId(req.params?.id).then((products) => {
+            category = {
+              ...category.toObject(),
+              products,
+            };
+            res.status(httpStatus.OK).send({
+              success: true,
+              data: category,
+            });
+          } )
+        } catch (e) {
+          res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+            success: false,
+            message: 'An error occurred while retrieving the products via category.',
+            error: e,
+          });
+        }
+        
       })
       .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         success: false,
@@ -41,6 +56,8 @@ class Category {
         error: e,
       }));
   };
+
+
 
   create(req, res) {
     CategoryService.create(req.body)

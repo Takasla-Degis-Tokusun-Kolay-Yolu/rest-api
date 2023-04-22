@@ -13,6 +13,7 @@ import idChecker from '../middleware/idChecker.js';
 const router = express.Router();
 
 router.get('/', UserController.index);
+router.route('/active').get(authenticateToken, UserController.getActiveUser);
 router.get('/:id', UserController.getOneById);
 router.route('/').post(validate(createValidation), UserController.create);
 router.route('/').patch(authenticateToken, validate(updateUserValidation), UserController.update);

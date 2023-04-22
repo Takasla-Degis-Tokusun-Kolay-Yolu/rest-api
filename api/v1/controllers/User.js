@@ -160,6 +160,29 @@ class User {
         .send({ error: 'Güncelleme işlemi sırasında bir problem oluştu !' }));
   }
 
+  getActiveUser(req, res) {
+    const { user } = req;
+    // userId: user._id,
+    UserService.findOneById(user._id.toString())
+      .then((user) => {
+        if (!user) {
+          return res.status(httpStatus.NOT_FOUND).send({
+            success: false,
+            message: 'There is no user with the given ID!',
+          });
+        }
+        return res.status(httpStatus.OK).send({
+          success: true,
+          data: user,
+        });
+      })
+      .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        success: false,
+        message: 'An error occurred while retrieving the user.',
+        error: e,
+      }));
+  }
+
   updateProfileImage(req, res) {
     //! 1 - Resim kontrolü
     if (!req?.files?.profile_image) {

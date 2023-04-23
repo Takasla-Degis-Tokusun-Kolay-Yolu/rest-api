@@ -86,6 +86,7 @@ class User {
             message: 'No such user was found.',
           });
         }
+        delete user.profileImage
         user = {
           ...user.toObject(),
           tokens: {
@@ -103,6 +104,7 @@ class User {
   }
 
   update(req, res) {
+    console.log(req.user);
     UserService.update({ _id: req.user?._id }, req.body)
       .then((updatedUser) => {
         res.status(httpStatus.OK).send({

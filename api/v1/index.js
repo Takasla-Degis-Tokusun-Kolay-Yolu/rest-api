@@ -12,8 +12,8 @@ const PORT = process.env.PORT || appConfig.appPort;
 
 const app = express();
 
-app.use(bodyParser.json({ limit: '30mb', extended: true }));
-app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
+app.use(bodyParser.json({ limit: '60mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '60mb', extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));

@@ -11,15 +11,22 @@ function passwordToHash(password) {
   return hash;
 }
 
+const filteredUser = (user) => {
+  const { profileImage, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+}
+
 // Access Token Oluşturma
 const generateAccessToken = (user) => {
-  const accessToken = JWT.sign({ name: user.email, ...user }, jwtConfig.jwtAccessSecret, { expiresIn: '1w' });
+  const payload = filteredUser(user?._doc);
+  const accessToken = JWT.sign({ name: payload.email, payload }, jwtConfig.jwtAccessSecret, { expiresIn: '1w' });
   return accessToken;
 };
 
 // Refresh Token Oluşturma
 const generateRefreshToken = (user) => {
-  const refreshToken = JWT.sign({ name: user.email, ...user }, jwtConfig.jwtRefreshSecret);
+  const payload = filteredUser(user?._doc);
+  const refreshToken = JWT.sign({ name: payload.email, payload }, jwtConfig.jwtRefreshSecret);
   return refreshToken;
 };
 

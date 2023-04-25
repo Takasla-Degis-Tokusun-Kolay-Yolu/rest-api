@@ -53,9 +53,11 @@ class Product {
         response = {
           ...response.toObject(),
         };
-        res.status(httpStatus.CREATED).send({
-          success: true,
-          data: response,
+        ProductService.findOneById(response._id).then((product) => {
+          res.status(httpStatus.OK).send({
+            success: true,
+            data: product,
+          });
         });
       })
       .catch((e) => {

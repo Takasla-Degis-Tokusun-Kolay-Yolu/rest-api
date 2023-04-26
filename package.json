@@ -5,7 +5,9 @@
   "main": "api/v1/index.js",
   "type": "module",
   "scripts": {
+    "star" : "node api/v1/index.js",
     "dev": "nodemon api/v1/index.js",
+    "build" : "babel api/v1/index.js -d dist",
     "lint": "eslint ."
   },
   "keywords": [],

@@ -8,6 +8,7 @@
     "star" : "node api/v1/index.js",
     "dev": "nodemon api/v1/index.js",
     "build" : "babel api/v1/index.js -d dist",
+    "build2": "webpack --mode production",
     "lint": "eslint ."
   },
   "keywords": [],

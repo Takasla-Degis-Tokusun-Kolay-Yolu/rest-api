@@ -119,9 +119,8 @@ class Product {
         }));
   }
 
-  getMyProducts(req, res) {
-    const { user } = req;
-    ProductService.getMine(user._id)
+  getUserProducts(req, res) {
+    ProductService.getUserProducts(req.params?.id)
       .then((response) => {
         res.status(httpStatus.CREATED).send({
           success: true,

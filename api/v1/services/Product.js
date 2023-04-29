@@ -40,7 +40,7 @@ class ProductService extends BaseService {
       });
   }
 
-  getMine(userId) {
+  getUserProducts(userId) {
     return BaseModel.find({ userId }).populate({
       path: 'userId',
       select: 'firstName lastName email location rate profileImage',

@@ -9,7 +9,7 @@ import ProductAuthorization from '../middleware/ProductAuthorization.js';
 const router = express.Router();
 
 router.get('/', ProductController.index);
-router.get('/mine', authenticateToken, ProductController.getMyProducts);
+router.get('/user-products/:id', authenticateToken, ProductController.getUserProducts);
 router.get('/others', authenticateToken, ProductController.getOtherProducts);
 router.get('/:id', ProductController.getOneById);
 router.route('/').post(authenticateToken, validate(createValidation), ProductController.create);

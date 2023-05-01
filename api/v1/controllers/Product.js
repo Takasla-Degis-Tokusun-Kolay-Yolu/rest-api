@@ -78,10 +78,23 @@ class Product {
   update(req, res) {
     ProductService.update({ _id: req.params?.id }, req.body)
       .then((updatedProduct) => {
-        res.status(httpStatus.OK).send({
-          success: true,
-          data: updatedProduct,
+        updatedProduct = {
+          ...updatedProduct.toObject(),
+        };
+        ProductService.findOneById(updatedProduct._id).then((product) => {
+          res.status(httpStatus.OK).send({
+            success: true,
+            data: product,
+          });
         });
+      })
+      .catch((e) => {
+        if (e.code === 11000) {
+          return res.status(httpStatus.BAD_REQUEST).send({
+            success: false,
+            message: 'This product name has already been taken.',
+          });
+        }
       })
       .catch(() => res
         .status(httpStatus.INTERNAL_SERVER_ERROR)

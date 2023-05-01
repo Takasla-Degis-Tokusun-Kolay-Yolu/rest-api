@@ -23,7 +23,7 @@ class ProductService extends BaseService {
   findOneById(id) {
     return BaseModel.findOne({ _id: id }).populate({
       path: 'userId',
-      select: 'firstName lastName email location rate profileImage',
+      select: 'firstName lastName email location rate profileImage createdAt',
     }).populate({
       path: 'categoryId',
       select: 'name',

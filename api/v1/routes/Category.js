@@ -7,6 +7,7 @@ import idChecker from '../middleware/idChecker.js';
 const router = express.Router();
 
 router.get('/', CategoryController.index);
+router.get('/:id/products', CategoryController.getProductsByCategoryId);
 router.get('/:id', CategoryController.getOneById);
 router.route('/').post(validate(createValidation), CategoryController.create);
 router.route('/:id').patch(idChecker(), validate(updateValidation), CategoryController.update);

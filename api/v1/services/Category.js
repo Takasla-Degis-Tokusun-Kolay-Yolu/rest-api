@@ -13,6 +13,17 @@ class CategoryService extends BaseService {
 
   getProductsByCategoryId(id) {
     return ProductModel.find({ categoryId: {$in: [id]}})
+    .populate({
+      path: 'userId',
+      select: 'firstName lastName email location rate profileImage',
+    }).populate({
+      path: 'categoryId',
+      select: 'name',
+    }).populate({
+      path: 'acceptedCategories',
+      select: 'name',
+    })
+      .populate('incomingOffers');
   }
 
 }

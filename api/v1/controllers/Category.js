@@ -128,6 +128,29 @@ class Category {
           message: error.message,
         }));
   }
+
+  getProductsByCategoryId(req, res) {
+    if (!req.params?.id) {
+      return res.status(httpStatus.BAD_REQUEST).send({
+        success: false,
+        message: 'There is no ID value in the request!',
+      });
+    }
+    CategoryService.getProductsByCategoryId(req.params?.id)
+      .then((products) => {
+        res.status(httpStatus.OK).send({
+          success: true,
+          data: products,
+        });
+      })
+      .catch((e) => {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+          success: false,
+          message: 'An error occurred while retrieving the products via category.',
+          error: e,
+        });
+      });
+  }
 }
 
 export default new Category();

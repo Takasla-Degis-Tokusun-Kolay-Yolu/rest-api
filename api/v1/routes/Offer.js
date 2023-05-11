@@ -12,6 +12,7 @@ const router = express.Router();
 router.get('/', OfferController.index);
 router.get('/mine', authenticateToken, OfferController.getMyOffers);
 router.get('/:id', OfferController.getOneById);
+router.get('/active-user-incoming-offers/:id', OfferController.getActiveUserIncomingOffers);
 router.route('/').post(authenticateToken, validate(createValidation), OfferController.create);
 router.route('/:id').patch(idChecker(), authenticateToken, ApplicantOfferAuthorization, validate(updateValidation), OfferController.update);
 router.route('/:id/accept').patch(idChecker(), authenticateToken, OfferAuthorization, OfferController.acceptOffer);

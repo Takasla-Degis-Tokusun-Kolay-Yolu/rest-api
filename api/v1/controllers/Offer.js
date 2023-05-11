@@ -188,6 +188,28 @@ class Offer {
           message: error.message,
         }));
   }
+
+  getActiveUserIncomingOffers(req, res) {
+    if (!req.params?.id) {
+      return res.status(httpStatus.BAD_REQUEST).send({
+        success: false,
+        message: 'There is no ID value in the request!',
+      });
+    }
+    OfferService.getActiveUserIncomingOffers(req.params?.id)
+      .then((response) => {
+        res.status(httpStatus.OK).send({
+          success: true,
+          data: response,
+        });
+      }).catch((error) => {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+          success: false,
+          error: 'Something went wrong when getting offers.',
+          message: error.message,
+        });
+      });
+  }
 }
 
 export default new Offer();

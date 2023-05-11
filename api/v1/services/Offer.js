@@ -85,6 +85,25 @@ class OfferService extends BaseService {
         populate: { path: 'categoryId acceptedCategories' },
       });
   }
+
+  getActiveUserIncomingOffers(userId) {
+    return BaseModel.find({ applicantUser: userId, status: 0 }).populate({
+      path: 'advertiserUser',
+      select: 'firstName lastName email location rate profileImage',
+    })
+      .populate({
+        path: 'advertiserProducts',
+        populate: { path: 'categoryId acceptedCategories' },
+      })
+      .populate({
+        path: 'applicantUser',
+        select: 'firstName lastName email location rate profileImage',
+      })
+      .populate({
+        path: 'applicantProducts',
+        populate: { path: 'categoryId acceptedCategories' },
+      });
+  }
 }
 
 export default new OfferService();

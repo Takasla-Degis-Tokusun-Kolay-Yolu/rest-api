@@ -87,7 +87,7 @@ class OfferService extends BaseService {
   }
 
   getActiveUserIncomingOffers(userId) {
-    return BaseModel.find({ applicantUser: userId, status: 0 }).populate({
+    return BaseModel.find({ advertiserUser: userId, status: 0 }).populate({
       path: 'advertiserUser',
       select: 'firstName lastName email location rate profileImage',
     })

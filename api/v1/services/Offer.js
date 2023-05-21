@@ -12,12 +12,12 @@ class OfferService extends BaseService {
         path: 'advertiserUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate('advertiserProducts')
+      .populate({ path: 'advertiserProducts', populate: { path: 'categoryId acceptedCategories' } })
       .populate({
         path: 'applicantUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate('applicantProducts');
+      .populate({ path: 'applicantProducts', populate: { path: 'categoryId acceptedCategories' } });
   }
 
   findOneById(id) {
@@ -30,7 +30,7 @@ class OfferService extends BaseService {
         path: 'applicantUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate('applicantProducts');
+      .populate({ path: 'applicantProducts', populate: { path: 'categoryId acceptedCategories' } });
   }
 
   getMine(userId) {
@@ -38,12 +38,12 @@ class OfferService extends BaseService {
       path: 'advertiserUser',
       select: 'firstName lastName email location rate profileImage',
     })
-      .populate('advertiserProducts')
+      .populate({ path: 'advertiserProducts', populate: { path: 'categoryId acceptedCategories' } })
       .populate({
         path: 'applicantUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate('applicantProducts');
+      .populate({ path: 'applicantProducts', populate: { path: 'categoryId acceptedCategories' } });
   }
 
   acceptOffer(id) {
@@ -52,18 +52,12 @@ class OfferService extends BaseService {
         path: 'advertiserUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate({
-        path: 'advertiserProducts',
-        populate: { path: 'categoryId acceptedCategories' },
-      })
+      .populate({ path: 'advertiserProducts', populate: { path: 'categoryId acceptedCategories' } })
       .populate({
         path: 'applicantUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate({
-        path: 'applicantProducts',
-        populate: { path: 'categoryId acceptedCategories' },
-      });
+      .populate({ path: 'applicantProducts', populate: { path: 'categoryId acceptedCategories' } });
   }
 
   rejectOffer(id) {
@@ -72,18 +66,12 @@ class OfferService extends BaseService {
         path: 'advertiserUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate({
-        path: 'advertiserProducts',
-        populate: { path: 'categoryId acceptedCategories' },
-      })
+      .populate({ path: 'advertiserProducts', populate: { path: 'categoryId acceptedCategories' } })
       .populate({
         path: 'applicantUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate({
-        path: 'applicantProducts',
-        populate: { path: 'categoryId acceptedCategories' },
-      });
+      .populate({ path: 'applicantProducts', populate: { path: 'categoryId acceptedCategories' } });
   }
 
   getActiveUserIncomingOffers(userId) {
@@ -91,18 +79,12 @@ class OfferService extends BaseService {
       path: 'advertiserUser',
       select: 'firstName lastName email location rate profileImage',
     })
-      .populate({
-        path: 'advertiserProducts',
-        populate: { path: 'categoryId acceptedCategories' },
-      })
+      .populate({ path: 'advertiserProducts', populate: { path: 'categoryId acceptedCategories' } })
       .populate({
         path: 'applicantUser',
         select: 'firstName lastName email location rate profileImage',
       })
-      .populate({
-        path: 'applicantProducts',
-        populate: { path: 'categoryId acceptedCategories' },
-      });
+      .populate({ path: 'applicantProducts', populate: { path: 'categoryId acceptedCategories' } });
   }
 }
 

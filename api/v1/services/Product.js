@@ -35,7 +35,9 @@ class ProductService extends BaseService {
         path: 'incomingOffers',
         populate: [
           { path: 'applicantUser', select: 'firstName lastName email location rate profileImage' },
+          { path: 'advertiserUser', select: 'firstName lastName email location rate profileImage' },
           { path: 'applicantProducts' },
+          { path: 'advertiserProducts' },
         ],
       });
   }
@@ -51,7 +53,15 @@ class ProductService extends BaseService {
       path: 'acceptedCategories',
       select: 'name',
     })
-      .populate('incomingOffers');
+      .populate({
+        path: 'incomingOffers',
+        populate: [
+          { path: 'applicantUser', select: 'firstName lastName email location rate profileImage' },
+          { path: 'advertiserUser', select: 'firstName lastName email location rate profileImage' },
+          { path: 'applicantProducts' },
+          { path: 'advertiserProducts' },
+        ],
+      });
   }
 
   getOthers(userId) {
